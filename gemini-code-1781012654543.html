@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Escáner QR Express</title>
+    
+    <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
+    
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            text-align: center;
+            margin: 0;
+            padding: 20px;
+            background-color: #f0f2f5;
+            color: #333;
+        }
+        h2 {
+            color: #007bff;
+        }
+        #contenedor-escanner {
+            max-width: 500px;
+            margin: 20px auto;
+            background: white;
+            padding: 15px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        #reader {
+            width: 100%;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        #resultado {
+            margin-top: 20px;
+            padding: 15px;
+            background: #e9ecef;
+            border-radius: 8px;
+            font-size: 1.1em;
+            word-break: break-all;
+        }
+        a {
+            color: #007bff;
+            text-decoration: none;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+    <h2>Escáner QR al Toque</h2>
+    <p>Dale permisos de cámara para empezar a escanear.</p>
+
+    <div id="contenedor-escanner">
+        <div id="reader"></div>
+    </div>
+
+    <div id="resultado">
+        <strong>Resultado:</strong> <span id="texto-resultado">Esperando código...</span>
+    </div>
+
+    <script>
+        // Función que se ejecuta cuando detecta un código QR con éxito
+        function alDetectarCodigo(decodedText, decodedResult) {
+            const contenedorTexto = document.getElementById('texto-resultado');
+            
+            // Si el texto parece un enlace, lo hacemos clickeable
+            if (decodedText.startsWith('http://') || decodedText.startsWith('https://')) {
+                contenedorTexto.innerHTML = `<a href="${decodedText}" target="_blank">${decodedText} 🚀</a>`;
+            } else {
+                contenedorTexto.innerText = decodedText;
+            }
+        }
+
+        // Función opcional por si falla el escaneo en tiempo real (puedes dejarla vacía)
+        function alFallarEscaneo(error) {
+            // Cambia mucha info por segundo, mejor dejarlo pasar en silencio
+        }
+
+        // Inicializar el escáner dentro del div con id "reader"
+        let html5QrcodeScanner = new Html5QrcodeScanner(
+            "reader", 
+            { 
+                fps: 10,       // Cuadros por segundo para procesar
+                qrbox: { width: 250, height: 250 } // Tamaño del cuadro de enfoque
+            }, 
+            false
+        );
+        
+        // Arrancar el escáner
+        html5QrcodeScanner.render(alDetectarCodigo, alFallarEscaneo);
+    </script>
+
+</body>
+</html>
